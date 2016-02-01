@@ -1,0 +1,7 @@
+<div ng-controller="BoardsCtrl as ctrl">
+  <ul>
+    <li ng-repeat="board in ctrl.boards">
+      <a ng-href="/boards/{{board.id}}">{{board.name}}</a>
+    </li>
+  </ul>
+</div>

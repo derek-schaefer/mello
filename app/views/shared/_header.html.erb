@@ -1,0 +1,15 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <%= link_to 'Mello', boards_path, class: 'navbar-brand' %>
+    </div>
+
+    <ul class="nav navbar-nav navbar-right">
+      <% if signed_in? %>
+        <li><%= link_to 'Sign out', session_path, method: :delete %></li>
+      <% else %>
+        <li><%= link_to 'Sign in', new_session_path %></li>
+      <% end %>
+    </ul>
+  </div>
+</nav>

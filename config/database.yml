@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  timeout: 5000
+  pool: 5
+
+development:
+  <<: *default
+  database: mello
+  username: mello
+  password: mello
+
+test:
+  <<: *default
+  database: mello_test
+  username: mello
+  password: mello
+
+production:
+  <<: *default
+  database: mello

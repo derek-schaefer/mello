@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+export CABLE=true
+bundle exec rails server -p 28080 -P tmp/pids/cable.pid

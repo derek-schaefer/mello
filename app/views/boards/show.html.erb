@@ -1,0 +1,34 @@
+<div ng-controller="BoardCtrl as boardCtrl" ng-init="boardId=<%= params[:id] %>">
+  <form>
+    <h1>Board</h1>
+    <div class="form-group">
+      <input ng-model="boardCtrl.board.name" type="text" class="form-control" />
+      <input ng-model="boardCtrl.board.description" type="text" class="form-control" />
+      <button ng-click="boardCtrl.submit(boardCtrl.board)" type="button">Save</button>
+    </div>
+  </form>
+  <ul ng-controller="ListsCtrl as listsCtrl">
+    <li ng-repeat="list in listsCtrl.lists | orderBy:name">
+      <form>
+        <h2>List</h2>
+        <div class="form-group">
+          <input ng-model="list.name" type="text" class="form-control" />
+          <input ng-model="list.description" type="text" class="form-control" />
+          <button ng-click="listsCtrl.submit(list)" type="button">Save</button>
+        </div>
+      </form>
+      <ul ng-controller="CardsCtrl as cardsCtrl">
+        <li ng-repeat="card in cardsCtrl.listCards(list, cardsCtrl.cards) | orderBy:name">
+          <form>
+            <h3>Card</h3>
+            <div class="form-group">
+              <input ng-model="card.name" type="text" class="form-control" />
+              <textarea ng-model="card.content" class="form-control"></textarea>
+              <button ng-click="cardsCtrl.submit(card)" type="button">Save</button>
+            </div>
+          </form>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
