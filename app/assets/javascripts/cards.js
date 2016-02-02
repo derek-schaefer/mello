@@ -10,71 +10,36 @@
       '$resource',
       Card
     ])
-    .factory('Cards', [
-      'Collection',
-      Cards
-    ])
-    .controller('CardsCtrl', [
+    .controller('CardCtrl', [
       '$scope',
-      'Cards',
       'Card',
-      CardsCtrl
+      CardCtrl
     ]);
 
-  function Cards(Collection) {
-    return Collection.create();
-  }
-
   function Card($resource) {
-    return $resource('/cards/:cardId.json', {
-      cardId: '@id'
-    }, {
-      update: { method: 'PUT' }
-    });
+    return $resource(
+      '/cards/:cardId.json',
+      { cardId: '@id' },
+      { update: { method: 'PUT' } }
+    );
   }
 
-  function CardsCtrl($scope, Cards, Card) {
+  function CardCtrl($scope, Card) {
     var self = this;
-    var boardId = $scope.boardId;
 
-    this.cards = null;
-    this.listCards = listCards;
     this.submit = submit;
 
-    Cards.get().then(function(cards) {
-      self.cards = cards;
-    });
-
-    $scope.$on('card:create', updateEvent);
-    $scope.$on('card:update', updateEvent);
-
-    function updateEvent(event, payload) {
-      update(event.name.split(':')[1], payload);
-    }
-
-    function update(action, card) {
-      switch (action) {
-      case 'create':
-        return self.cards.push(new Card(card));
-      case 'update':
-        return angular.extend(
-          _.findWhere(self.cards, { id: card.id }),
-          card
-        );
+    $scope.$on('card:update', function(event, payload) {
+      if (payload.id === $scope.card.id) {
+        angular.extend($scope.card, payload);
       }
-    }
-
-    function listCards(list, cards) {
-      return _.select(cards, function(card) {
-        return card.list_id === list.id;
-      });
-    }
+    });
 
     function submit(card) {
       if (card.id) {
-        card.$update();
+        return card.$update();
       } else {
-        card.$save();
+        return card.$save();
       }
     }
   }

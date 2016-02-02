@@ -10,57 +10,34 @@
       '$resource',
       List
     ])
-    .factory('Lists', [
-      'Collection',
-      Lists
-    ])
-    .controller('ListsCtrl', [
+    .controller('ListCtrl', [
       '$scope',
-      'Lists',
       'List',
-      ListsCtrl
+      ListCtrl
     ]);
 
-  function Lists(Collection) {
-    return Collection.create();
-  }
-
   function List($resource) {
-    return $resource('/lists/:listId.json', {
-      listId: '@id'
-    }, {
-      update: { method: 'PUT' }
-    });
+    return $resource(
+      '/lists/:listId.json',
+      { listId: '@id' },
+      { update: { method: 'PUT' } }
+    );
   }
 
-  function ListsCtrl($scope, Lists, List) {
+  function ListCtrl($scope, List) {
     var self = this;
-    var boardId = $scope.boardId;
 
-    this.lists = null;
+    this.selectCards = selectCards
     this.submit = submit;
 
-    Lists.get().then(function(lists) {
-      self.lists = lists;
+    $scope.$on('list:update', function(event, payload) {
+      if (payload.id === $scope.list.id) {
+        angular.extend($scope.list, payload);
+      }
     });
 
-    $scope.$on('list:create', updateEvent);
-    $scope.$on('list:update', updateEvent);
-
-    function updateEvent(event, payload) {
-      update(event.name.split(':')[1], payload);
-    }
-
-    function update(action, list) {
-      switch (action) {
-      case 'create':
-        return self.lists.push(new List(list));
-      case 'update':
-        return angular.extend(
-          _.findWhere(self.lists, { id: list.id }),
-          list
-        );
-      }
+    function selectCards(cards) {
+      return _.where(cards, { list_id: $scope.list.id });
     }
 
     function submit(list) {

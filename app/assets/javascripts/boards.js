@@ -17,41 +17,37 @@
     .controller('BoardCtrl', [
       '$scope',
       'Board',
-      'Lists',
       'List',
-      'Cards',
       'Card',
       BoardCtrl
     ]);
 
   function Board($resource) {
-    return $resource('/boards/:boardId.json', {
-      boardId: '@id'
-    }, {
-      update: { method: 'PUT' }
-    });
+    return $resource(
+      '/boards/:boardId.json',
+      { boardId: '@id' },
+      { update: { method: 'PUT' } }
+    );
   }
 
   function BoardsCtrl(Board) {
     this.boards = Board.query();
   }
 
-  function BoardCtrl($scope, Board, Lists, List, Cards, Card) {
+  function BoardCtrl($scope, Board, List, Card) {
     var self = this;
     var cable = null;
 
     this.board = null;
+    this.lists = null;
+    this.cards = null;
     this.submit = submit;
 
     $scope.$watch('boardId', function(boardId) {
       cable = subscribe(boardId);
       self.board = Board.get({ boardId: boardId });
-      List.query({ boardId: boardId }, function(lists) {
-        Lists.set(lists);
-      });
-      Card.query({ boardId: boardId }, function(cards) {
-        Cards.set(cards);
-      });
+      self.lists = List.query({ boardId: boardId });
+      self.cards = Card.query({ boardId: boardId });
     });
 
     $scope.$on('$destroy', function() {
@@ -70,13 +66,30 @@
 
     function receive(data) {
       console.log('received', data);
-      var event = data.event.split(':');
-      if (event[0] === 'board') update(event[1], data.payload);
       $scope.$broadcast(data.event, data.payload);
+      switch (data.event) {
+      case 'board:update':
+        update(data.payload);
+        break;
+      case 'list:create':
+        addList(data.payload);
+        break;
+      case 'card:create':
+        addCard(data.payload);
+        break;
+      }
     }
 
-    function update(action, board) {
+    function update(board) {
       self.board = new Board(board);
+    }
+
+    function addList(list) {
+      self.lists.push(new List(list));
+    }
+
+    function addCard(card) {
+      self.cards.push(new Card(card));
     }
 
     function submit(board) {

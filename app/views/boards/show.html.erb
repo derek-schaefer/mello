@@ -7,24 +7,24 @@
       <button ng-click="boardCtrl.submit(boardCtrl.board)" type="button">Save</button>
     </div>
   </form>
-  <ul ng-controller="ListsCtrl as listsCtrl">
-    <li ng-repeat="list in listsCtrl.lists | orderBy:name">
+  <ul>
+    <li ng-repeat="list in boardCtrl.lists | orderBy:name" ng-controller="ListCtrl as listCtrl">
       <form>
         <h2>List</h2>
         <div class="form-group">
           <input ng-model="list.name" type="text" class="form-control" />
           <input ng-model="list.description" type="text" class="form-control" />
-          <button ng-click="listsCtrl.submit(list)" type="button">Save</button>
+          <button ng-click="listCtrl.submit(list)" type="button">Save</button>
         </div>
       </form>
-      <ul ng-controller="CardsCtrl as cardsCtrl">
-        <li ng-repeat="card in cardsCtrl.listCards(list, cardsCtrl.cards) | orderBy:name">
+      <ul>
+        <li ng-repeat="card in listCtrl.selectCards(boardCtrl.cards) | orderBy:name" ng-controller="CardCtrl as cardCtrl">
           <form>
             <h3>Card</h3>
             <div class="form-group">
               <input ng-model="card.name" type="text" class="form-control" />
               <textarea ng-model="card.content" class="form-control"></textarea>
-              <button ng-click="cardsCtrl.submit(card)" type="button">Save</button>
+              <button ng-click="cardCtrl.submit(card)" type="button">Save</button>
             </div>
           </form>
         </li>
