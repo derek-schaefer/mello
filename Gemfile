@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '>= 5.0.0.beta1.1', '< 5.1'
+gem 'rails', '>= 5.0.0.beta2', '< 5.1'
 gem 'pg', '~> 0.18.4'
 gem 'uglifier', '~> 2.7.2'
 gem 'jquery-rails', '~> 4.1.0'
@@ -13,6 +13,7 @@ gem 'bootstrap-sass', '~> 3.3.6'
 gem 'simple_form', '~> 3.2.1'
 gem 'active_model_serializers', '~> 0.10.0.rc4'
 gem 'responders', '~> 2.1.1'
+gem 'redis', '~> 3.2.2'
 
 group :development, :test do
   gem 'pry', '~> 0.10.3'
